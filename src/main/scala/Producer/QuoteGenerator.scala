@@ -4,13 +4,14 @@ import Config.KafkaConfig
 import java.util.Properties
 import org.apache.kafka.clients.producer.{KafkaProducer, ProducerRecord, ProducerConfig}
 
-object QuoteGenerator {
+object QuoteGenerator extends App{
 
   // Producer properties for the Kafka producer
   val props: Properties = new Properties()
 
   props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, KafkaConfig.BOOTSTRAP_SERVERS)
   props.put(ProducerConfig.CLIENT_ID_CONFIG, KafkaConfig.CLIENT_ID)
+  props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, KafkaConfig.BOOTSTRAP_SERVERS)
   props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, KafkaConfig.KEY_SERIALIZER_CLASS)
   props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, KafkaConfig.VALUE_SERIALIZER_CLASS)
 
