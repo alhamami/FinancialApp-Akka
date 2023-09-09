@@ -4,6 +4,7 @@ import Config.KafkaConfig
 import java.util.Properties
 import org.apache.kafka.clients.producer.{KafkaProducer, ProducerRecord, ProducerConfig}
 
+import Service.QuoteApi
 object QuoteGenerator extends App{
 
   // Producer properties for the Kafka producer
@@ -17,6 +18,7 @@ object QuoteGenerator extends App{
 
   //Kafka producer for generating quotes and send them to Kafka
   val quoteGenerator = new KafkaProducer[String, String](props)
+
 
 
   try {
@@ -34,6 +36,8 @@ object QuoteGenerator extends App{
     quoteGenerator.close()
 
   }
+
+
 
 
 }
