@@ -1,7 +1,9 @@
 package Config
-import org.apache.kafka.common.serialization.StringSerializer
-import org.apache.kafka.common.serialization.StringDeserializer
+
 object KafkaConfig {
+
+  val stringSerializer =  "org.apache.kafka.common.serialization.StringSerializer"
+  val stringDeserializer = "org.apache.kafka.common.serialization.StringDeserializer"
 
   //List of host/port pairs to use for establishing the initial connection to the Kafka cluster
   val BOOTSTRAP_SERVERS = "localhost:9092"
@@ -16,12 +18,12 @@ object KafkaConfig {
   //Interval for commit offsets
   val AUTO_COMMIT_INTERVAL_MS = "1000"
   //To converts the key into bytes before the producer sends the message to the topic
-  val KEY_SERIALIZER_CLASS = StringSerializer
+  val KEY_SERIALIZER_CLASS = stringSerializer
   //To converts the value into bytes before the producer sends the message to the topic
-  val VALUE_SERIALIZER_CLASS  = StringSerializer
+  val VALUE_SERIALIZER_CLASS  = stringSerializer
   //To converts the key from bytes to string
-  val KEY_DESERIALIZER_CLASS = StringDeserializer
+  val KEY_DESERIALIZER_CLASS = stringDeserializer
   //To converts the value from bytes to string
-  val VALUE_DESERIALIZER_CLASS = StringDeserializer
+  val VALUE_DESERIALIZER_CLASS = stringDeserializer
 
 }
