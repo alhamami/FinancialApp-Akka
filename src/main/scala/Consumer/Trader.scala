@@ -1,0 +1,5 @@
+package Consumer
+
+object Trader {
+
+}
