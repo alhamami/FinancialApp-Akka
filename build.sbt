@@ -16,7 +16,12 @@ libraryDependencies ++= {
     "org.scalatest"                   % "scalatest_2.11"            % "2.2.1",
     "com.typesafe.scala-logging"      %% "scala-logging"            % ScalaLoggingVersion,
     "org.scalaj"                      %% "scalaj-http"              % "2.4.2",
-    "com.typesafe.play"               %% "play-json"                % "2.4.8"
+    "com.typesafe.play"               %% "play-json"                % "2.4.8",
+    "com.typesafe.akka"               %% "akka-http-spray-json"    % "10.1.11",
+    "com.fasterxml.jackson.core" % "jackson-databind" % "2.5.3",
+    "com.fasterxml.jackson.module" % "jackson-module-scala_2.11" % "2.8.8"
+
+
 
   )
 }
