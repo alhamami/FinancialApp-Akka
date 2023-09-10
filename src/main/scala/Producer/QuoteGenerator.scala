@@ -1,10 +1,11 @@
 package Producer
 import Config.KafkaConfig
-
+import Model.Quote
 import java.util.Properties
-import org.apache.kafka.clients.producer.{KafkaProducer, ProducerRecord, ProducerConfig}
-
+import org.apache.kafka.clients.producer.{KafkaProducer, ProducerConfig, ProducerRecord}
 import Service.QuoteApi
+import scala.collection.mutable
+
 object QuoteGenerator extends App{
 
   // Producer properties for the Kafka producer
@@ -23,12 +24,19 @@ object QuoteGenerator extends App{
 
   try {
 
-    //Stock Info.
-    val stockName = "Alrajhi "
-    val stockPrice = "56"
+    val quoteList:mutable.MutableList[Quote] = QuoteApi.fetchQuotes();
 
     //Send record to Kafka topic
-    quoteGenerator.send(new ProducerRecord[String, String](KafkaConfig.TOPIC, stockName, stockPrice))
+    for(quote <- quoteList){
+
+      val values = quote.symbol+","+quote.date+","+quote.open+","+quote.high+","+ quote.low+","+ quote.close+","+quote.volume
+
+      //Send record to Kafka topic
+      quoteGenerator.send(new ProducerRecord[String, String](KafkaConfig.TOPIC, values))
+
+
+    }
+
 
   } finally {
 
