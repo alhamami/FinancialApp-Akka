@@ -6,6 +6,7 @@ import java.util.Properties
 import org.apache.kafka.clients.consumer.{ConsumerConfig, KafkaConsumer}
 
 import scala.collection.JavaConverters._
+import Service.TradingService
 object Trader extends App{
 
 
@@ -21,6 +22,8 @@ object Trader extends App{
 
   //Kafka consumer for consuming quotes from Kafka
   val trader = new KafkaConsumer(props)
+
+  val amount = 5000
 
 
   try {
@@ -41,9 +44,14 @@ object Trader extends App{
         println("# Key: " + data.key())
         println("# Value: " + data.value())
 
+        val trade:Double = TradingService.trade(15000, data.key(), data.value());
+
+
       }
     }
-  } finally {
+  }catch {
+    case e: Exception => println("Exception occurred during consume quotes " + e)
+  }finally {
 
     //Close Connection
     trader.close()

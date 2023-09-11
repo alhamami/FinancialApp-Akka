@@ -8,7 +8,7 @@ object KafkaConfig {
   //List of host/port pairs to use for establishing the initial connection to the Kafka cluster
   val BOOTSTRAP_SERVERS = "localhost:9092"
   //Name of Kafka topic logs that hold messages and events in a logical order
-  val TOPIC = "Quote-Topic"
+  val TOPIC = "quotes-topic"
   //To keep tracking the source of requests
   val CLIENT_ID = "QuoteGenerator"
   //To determines which consumers belong to which group

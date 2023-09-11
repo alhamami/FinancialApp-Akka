@@ -7,6 +7,7 @@ import scala.collection.mutable
 
 object QuoteApi{
 
+
   //Fetch quote
   def fetchQuotes(): mutable.MutableList[Quote] = {
 
@@ -21,22 +22,30 @@ object QuoteApi{
       try {
 
         //Fetch quotes
-        val response: HttpResponse[String] = Http("https://www.alphavantage.co/query").params(Map("function" -> "TIME_SERIES_DAILY", "symbol" -> symbol, "apikey" -> "demo")).asString
+        val response: HttpResponse[String] = Http("https://www.alphavantage.co/query").params(Map("function" -> "GLOBAL_QUOTE", "symbol" -> symbol, "apikey" -> "tbd1")).asString
         val json = Json.parse(response.body)
 
-        val timeSeries = (json \\ "Time Series (Daily)")(0)
 
-        //Get keys of quotes
-        val keys = getKeys(timeSeries)
+        //Fetched quote
+        val globalQuote = (json \\ "Global Quote")(0)
 
-        //Fill lsit of quote
-        for (key <- keys) {
-          val quotes = (json \\ key)(0)
+        //Quote fields
+        val quoteSymbol = (globalQuote \\ "01. symbol")(0).toString().replace("\"", "")
+        val quoteOpen = (globalQuote \\ "02. open")(0).toString().replace("\"", "")
+        val quoteHigh = (globalQuote \\ "03. high")(0).toString().replace("\"", "")
+        val quoteLow = (globalQuote \\ "04. low")(0).toString().replace("\"", "")
+        val quotePrice = (globalQuote \\ "05. price")(0).toString().replace("\"", "")
+        val quoteVolume = (globalQuote \\ "06. volume")(0).toString().replace("\"", "")
+        val quoteLatestTradingDay = (globalQuote \\ "07. latest trading day")(0).toString().replace("\"", "")
+        val quotePreviousClose = (globalQuote \\ "08. previous close")(0).toString().replace("\"", "")
+        val quoteChange = (globalQuote \\ "09. change")(0).toString().replace("\"", "")
+        val quoteChangePercent = (globalQuote \\ "10. change percent")(0).toString().replace("\"", "")
 
-          val quote: Quote = new Quote(symbol = symbol, date = key, open = (quotes \\ "1. open")(0).toString(), high = (quotes \\ "2. high")(0).toString(), low = (quotes \\ "3. low")(0).toString(), close = (quotes \\ "4. close")(0).toString(), volume = (quotes \\ "5. volume")(0).toString())
-          quoteList += quote
+        //Create Quote object
+        val quote: Quote = Quote(symbol = quoteSymbol, open = quoteOpen, high = quoteHigh, low = quoteLow, price = quotePrice, volume = quoteVolume, latestTradingDay = quoteLatestTradingDay, previousClose = quotePreviousClose, change = quoteChange, changePercent = quoteChangePercent)
 
-        }
+        //Add quote to quote list
+        quoteList += quote
 
       } catch {
         case e: Exception => println("Exception occurred during fetch quotes " + e)
@@ -44,15 +53,5 @@ object QuoteApi{
     }
     return quoteList;
   }
-
-
-
-  //Get keys of json formate
-  def getKeys(json: JsValue): collection.Set[String] = json match {
-    case o: JsObject => o.keys ++ o.values.flatMap(getKeys)
-    case JsArray(as) => as.flatMap(getKeys).toSet
-    case _ => Set()
-  }
-
 
 }
