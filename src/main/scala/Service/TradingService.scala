@@ -1,5 +1,7 @@
 package Service
 
+import Consumer.TraderActor.logger
+import com.typesafe.scalalogging.Logger
 import org.joda.time.LocalDate
 
 
@@ -7,6 +9,9 @@ object TradingService {
 
 
   def trade(amount:Double, symbol:String, quote:String): Double = {
+
+    val logger = Logger("Financial-App-Logger")
+
 
 
     val quoteValues:Array[String] = quote.split(",")
@@ -23,57 +28,70 @@ object TradingService {
     val changePercent:Double = quoteValues(8).split("%")(0).toDouble
 
     var amountTotal = amount
-    var stocks = 4
+    var stocks = 0
 
 
     if(price <= amountTotal){
 
       if ((price / amount) < 0.10 && price < previousClose && changePercent < 0 &&  changePercent >= -5.0) {
-        //Buy
-        println("## Buy")
+
+        //Buy quote
+        logger.info("********************* Buy Quote *********************")
+        logger.info(s"Quote Symbol: ${symbol}")
+        logger.info(s"Quote Price: ${price}")
+        logger.info(s"Remaining Amount: ${amount}")
+        logger.info("The Strategy: This is the best strategy chosen, as it is based on comparing the current price of the quote with its last close, as well as the change percent where should be between 0 and -0.5.")
+        logger.info("*****************************************************")
+
         amountTotal -= price
         stocks += 1
 
-        println("##########################################################")
-        println(amountTotal +" -- "+ stocks)
-        println("##########################################################")
+      } else if (price / amount < 0.25  && previousClose - lowPrice < 0  ){
 
-      } else if (price / amount < 0.25 && latestTradingDay.compareTo(LocalDate.now)  == 1  && previousClose - lowPrice < 0  ){
-        println("## Buy")
+
+        logger.info("********************* Buy Quote *********************")
+        logger.info(s"Quote Symbol: ${symbol}")
+        logger.info(s"Quote Price: ${price}")
+        logger.info(s"Remaining Amount: ${amount}")
+        logger.info("The Strategy: This is the best strategy chosen, as it is based on the differences between the previous close of the quote with its low price and the quote price should be less than 0.25 of the amount.")
+        logger.info("*****************************************************")
 
         amountTotal -= price
         stocks+=1
 
-        println("##########################################################")
-        println(amountTotal +" -- "+ stocks)
-        println("##########################################################")
-
       }
     }else if(stocks != 0){
 
-       if (latestTradingDay.compareTo(LocalDate.now) == 1 && previousClose - highPrice > 0) {
-        println("## Sell")
-        amountTotal += price
-        stocks -= 1
+       if (previousClose - highPrice > 0) {
 
-         println("##########################################################")
-         println(amountTotal + stocks)
-         println("##########################################################")
+         logger.info("********************* Sell Quote *********************")
+         logger.info(s"Quote Symbol: ${symbol}")
+         logger.info(s"Quote Price: ${price}")
+         logger.info(s"Remaining Amount: ${amount}")
+         logger.info("The Strategy: This is the best strategy chosen, as it is based on the differences between the previous close of the quote with its high price.")
+         logger.info("*****************************************************")
 
-
-      } else if(price > previousClose){
-         println("## Sell")
          amountTotal += price
          stocks -= 1
 
-         println("##########################################################")
-         println(amountTotal + stocks)
-         println("##########################################################")
+
+      } else if(price > previousClose){
+
+         logger.info("********************* Sell Quote *********************")
+         logger.info(s"Quote Symbol: ${symbol}")
+         logger.info(s"Quote Price: ${price}")
+         logger.info(s"Remaining Amount: ${amount}")
+         logger.info("The Strategy: This is the best strategy chosen, as it is based on the price of the quote where should be greater than previous close.")
+         logger.info("*****************************************************")
+
+
+         amountTotal += price
+         stocks -= 1
 
        }
     }
 
-    return amountTotal
+    return amountTotal;
   }
 
 

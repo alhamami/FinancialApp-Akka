@@ -44,7 +44,7 @@ object Trader extends App{
         println("# Key: " + data.key())
         println("# Value: " + data.value())
 
-        val trade:Double = TradingService.trade(15000, data.key(), data.value());
+        val trade:Double = TradingService.trade(15000, data.key(), data.value())
 
 
       }
