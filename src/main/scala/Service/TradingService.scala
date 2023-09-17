@@ -1,6 +1,5 @@
 package Service
 
-import Consumer.TraderActor.logger
 import com.typesafe.scalalogging.Logger
 import org.joda.time.LocalDate
 
