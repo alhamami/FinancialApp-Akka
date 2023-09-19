@@ -1,6 +1,7 @@
 package Consumer
 
 import Config.KafkaConfig
+import Model.QuoteRecord
 
 import java.util.Properties
 import org.apache.kafka.clients.consumer.{ConsumerConfig, KafkaConsumer}
@@ -44,7 +45,7 @@ object Trader extends App{
         println("# Key: " + data.key())
         println("# Value: " + data.value())
 
-        val trade:Double = TradingService.trade(15000, data.key(), data.value())
+        val trade: QuoteRecord = TradingService.trade(15000, data.key(), data.value())
 
 
       }

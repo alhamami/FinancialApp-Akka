@@ -1,12 +1,13 @@
 package Consumer
 
+import Actor.Audit
 import Config.KafkaConfig
 import Service.TradingService
 import org.apache.kafka.clients.consumer.ConsumerConfig
 import org.apache.kafka.common.serialization.StringDeserializer
 
 import java.util
-import akka.actor.ActorSystem
+import akka.actor.{ActorSystem, Props, actorRef2Scala}
 import akka.stream.{ActorMaterializer, Materializer}
 import akka.kafka.{ConsumerSettings, Subscriptions}
 import akka.kafka.scaladsl.Consumer
@@ -24,6 +25,7 @@ object TraderActor extends App {
 
   //Creating Actor System
   implicit val financialSystem: ActorSystem = ActorSystem("Financial-App")
+  val auditActor = financialSystem.actorOf(Props[Audit], "Audit")
 
   implicit val materializer: Materializer = ActorMaterializer()
 
@@ -46,7 +48,7 @@ object TraderActor extends App {
     logger.info("Reading quotes from Kafka Topic")
 
     //Read values from Kafka topic and send them to TradingService
-    val reader = Consumer.plainSource(traderSettings, Subscriptions.topics("quotes-topic")).runWith(Sink.foreach(T=>TradingService.trade(15000, T.key(), T.value())))
+    val reader = Consumer.plainSource(traderSettings, Subscriptions.topics("quotes-topic")).runWith(Sink.foreach(T=>auditActor!TradingService.trade(15000, T.key(), T.value())))
 
     //Delegate the execution
     implicit val executionContext: ExecutionContextExecutor = financialSystem.dispatcher

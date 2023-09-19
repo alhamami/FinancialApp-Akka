@@ -1,5 +1,6 @@
 package Service
 
+import Model.QuoteRecord
 import com.typesafe.scalalogging.Logger
 import org.joda.time.LocalDate
 
@@ -7,7 +8,7 @@ import org.joda.time.LocalDate
 object TradingService {
 
 
-  def trade(amount:Double, symbol:String, quote:String): Double = {
+  def trade(amount:Double, symbol:String, quote:String): QuoteRecord = {
 
     val logger = Logger("Financial-App-Logger")
 
@@ -29,6 +30,8 @@ object TradingService {
     var amountTotal = amount
     var stocks = 0
 
+    var quoteRecord: QuoteRecord = null
+
 
     if(price <= amountTotal){
 
@@ -42,6 +45,8 @@ object TradingService {
         logger.info("The Strategy: This is the best strategy chosen, as it is based on comparing the current price of the quote with its last close, as well as the change percent where should be between 0 and -0.5.")
         logger.info("*****************************************************")
 
+        quoteRecord = QuoteRecord(symbol, price, amount, action = "Buy")
+
         amountTotal -= price
         stocks += 1
 
@@ -54,6 +59,9 @@ object TradingService {
         logger.info(s"Remaining Amount: ${amount}")
         logger.info("The Strategy: This is the best strategy chosen, as it is based on the differences between the previous close of the quote with its low price and the quote price should be less than 0.25 of the amount.")
         logger.info("*****************************************************")
+
+        quoteRecord = QuoteRecord(symbol, price, amount, action = "Buy")
+
 
         amountTotal -= price
         stocks+=1
@@ -70,6 +78,8 @@ object TradingService {
          logger.info("The Strategy: This is the best strategy chosen, as it is based on the differences between the previous close of the quote with its high price.")
          logger.info("*****************************************************")
 
+         quoteRecord = QuoteRecord(symbol, price, amount, action = "Sell")
+
          amountTotal += price
          stocks -= 1
 
@@ -83,6 +93,7 @@ object TradingService {
          logger.info("The Strategy: This is the best strategy chosen, as it is based on the price of the quote where should be greater than previous close.")
          logger.info("*****************************************************")
 
+         quoteRecord = QuoteRecord(symbol, price, amount, action = "Sell")
 
          amountTotal += price
          stocks -= 1
@@ -90,7 +101,7 @@ object TradingService {
        }
     }
 
-    return amountTotal;
+    quoteRecord;
   }
 
 
