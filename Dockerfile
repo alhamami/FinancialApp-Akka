@@ -28,20 +28,14 @@ RUN tar xzf kafka_2.13-3.0.0.tgz
 
 #RUN mv kafka_2.13-3.0.0 ~
 
-#RUN ./kafka_2.13-3.0.0/bin/kafka-server-start.sh kafka_2.13-3.0.0/config/server.properties &
+RUN ./kafka_2.13-3.0.0/bin/zookeeper-server-start.sh kafka_2.13-3.0.0/config/zookeeper.properties &
 
-ADD jalal.sql /jalal.sql
+RUN ./kafka_2.13-3.0.0/bin/kafka-server-start.sh kafka_2.13-3.0.0/config/server.properties &
 
-RUN mysqld_safe --skip-grant-tables &
+ADD Quote.sql /Quote.sql
 
-RUN ./kafka_2.13-3.0.0/bin/zookeeper-server-start.sh kafka_2.13-3.0.0/config/zookeeper.properties 
+ADD my.cnf /etc/mysql/my.cnf
 
+RUN service mysql start
 
-#RUN mysql
-
-#CMD ["service" ,"mysql", "start"]
-#CMD ["mysql"]
-
-#CMD ["mysqld_safe" ,"--skip-grant-tables" ,"&"]
-
-#CMD ["mysql" ,"-u" ,"root", "<" ,"jalal.sql"]
+CMD ["mysql" ,"-u" ,"root", "<" ,"Quote.sql"]
